@@ -85,6 +85,27 @@ const Nav = () => {
                             className="rounded-full"
                             onClick={() => setToggleDropDown((prev) => !prev)} //toggle nav
                             alt="profile" />
+
+                        {toggleDropDown && (
+                            <div className="dropdown">
+                                <Link href="/profile"
+                                    className="dropdown_link"
+                                    onClick={() => setToggleDropDown(false)}
+                                >
+                                    My Profile
+                                </Link>
+                                <Link href="/create-prompt"
+                                    className="dropdown_link"
+                                    onClick={() => setToggleDropDown(false)}
+                                >
+                                    Create Prompt
+                                </Link>
+
+                                <button 
+                                
+                                ></button>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div>
