@@ -27,7 +27,7 @@ const Nav = () => {
     }
 
     return (
-        <nav className="flex-between w-full mb-16 pt-3">
+        <nav className="flex-between w-full mb-16 pt-3 px-10">
             <Link href="/" className="flex gap-2 flex-center">
                 <Image
                     src="/assets/images/logo.svg"
@@ -101,9 +101,14 @@ const Nav = () => {
                                     Create Prompt
                                 </Link>
 
-                                <button 
-                                
-                                ></button>
+                                <button
+                                    type="button"
+                                    className="mt-5 w-full black_btn"
+                                    onClick={() => {
+                                        setToggleDropDown(false);
+                                        signOut();
+                                    }}
+                                > Sign Out</button>
                             </div>
                         )}
                     </div>
