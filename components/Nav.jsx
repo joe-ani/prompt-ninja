@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState, useEffect } from "react";
-import { getProviders, sighIn, signOut, useSession, } from "next-auth/react";
+import { getProviders, signIn, signOut, useSession, } from "next-auth/react";
 
 const Nav = () => {
 
@@ -11,20 +11,17 @@ const Nav = () => {
     // initialize provider
     const [providers, setProviders] = useState(null);
     const [toggleDropDown, setToggleDropDown] = useState(false)
-    const isUserLoggedIn = true;
+    const { data: session } = useSession();
 
     // set providers / Authentication *Google*
     useEffect(() => {
-        const setProviders = async () => {
+        const setUpProviders = async () => {
             const response = await getProviders();
             setProviders(response);
         }
-        setProviders()
+        setUpProviders();
     }, [])
 
-    const signIn = () => {
-        // Authentication Code goes here
-    }
 
     return (
         <nav className="flex-between w-full mb-16 pt-3 px-10">
@@ -42,7 +39,7 @@ const Nav = () => {
 
             {/* desktop nav */}
             <div className="sm:flex hidden">
-                {isUserLoggedIn ? (
+                {session?.user ? (
                     <div className="flex gap-3 md:gap-5">
                         <Link href="/create-prompt" className="black_btn">
                             Create Post
@@ -50,11 +47,11 @@ const Nav = () => {
                         <button className="outline_btn">Sign Out</button>
 
                         <Link href="/profile">
-                            <Image src="/assets/images/logo.svg"
+                            <Image src={session?.user.image}
                                 alt="prompt ninja logo"
                                 width={30}
                                 height={30}
-                                className="object-contain z-10 " />
+                                className="object-contain z-10 rounded-full" />
                         </Link>
                     </div>
                 ) : (
@@ -77,9 +74,9 @@ const Nav = () => {
 
             {/* mobile nav */}
             <div className="sm:hidden relative">
-                {isUserLoggedIn ? (
+                {session?.user ? (
                     <div className="flex">
-                        <Image src="/assets/images/logo.svg"
+                        <Image src={session?.user.image}
                             width={37}
                             height={37}
                             className="rounded-full"
