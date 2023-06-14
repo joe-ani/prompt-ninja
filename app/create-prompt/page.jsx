@@ -1,9 +1,36 @@
-import React from 'react'
+'use client'
+
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+
+import Form from '@/components/Form'
 
 const CreatePrompt = () => {
-  return (
-    <div>Create Prompt</div>
-  )
+    const [submitting, setSubmitting] = useState(false)
+    const [post, setPost] = useState(
+        {
+            prompt: '',
+            tag: '',
+        }
+    )
+
+    const createPrompt = async (e) => {
+        e.preventDefault();
+
+    }
+
+    return (
+        <Form
+            type="create"
+            post={post}
+            setPost={setPost}
+            submitting={submitting}
+            handleSubmit={createPrompt}
+
+
+        />
+    )
 }
 
 export default CreatePrompt
