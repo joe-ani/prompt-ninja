@@ -44,7 +44,7 @@ const Nav = () => {
                         <Link href="/create-prompt" className="black_btn">
                             Create Post
                         </Link>
-                        <button className="outline_btn">Sign Out</button>
+                        <button className="outline_btn" onClick={() => signOut()}>Sign Out</button>
 
                         <Link href="/profile">
                             <Image src={session?.user.image}
