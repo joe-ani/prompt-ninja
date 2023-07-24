@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PromptCard from './PromptCard'
+import { useSession } from 'next-auth/react';
+
 
 const PromptCardList = ({ data, handleTagClick }) => {
-  console.log(data);
   return (
     <div className='mt-16 prompt_layout'>
       {data.map(post => (
@@ -19,12 +20,26 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  const [SearchText, setsearchText] = useState('');
+  const [SearchText, setSearchText] = useState('');
+  const [filteredPosts, setFilteredPosts] = useState([])
   const [posts, setPosts] = useState([]);
+  const inputRef = useRef();
+  const { data: session } = useSession();
 
   const handleSearchChange = (e) => {
-
+    setSearchText(e.target.value.trim())
+    // Set the post arry to the filtered array value
   }
+
+  const handleTagClick = (e) => {
+    inputRef.current.value = e.target.innerText.slice(1)
+    setSearchText(e.target.innerText.slice(1));
+  }
+
+  useEffect(() => {
+    const filteredPosts = posts.filter(post => post.tag.includes(SearchText) | post.prompt.includes(SearchText) | session?.em)
+    setFilteredPosts(filteredPosts)
+  }, [SearchText, posts])
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -40,9 +55,9 @@ const Feed = () => {
     <section className='feed'>
       <form className='relative w-full flex-center'>
         <input
+          ref={inputRef}
           type="text"
           placeholder='Search for a tag or username'
-          value={SearchText}
           onChange={handleSearchChange}
           className="search_input"
           required
@@ -51,8 +66,8 @@ const Feed = () => {
 
       </form>
       <PromptCardList
-        data={posts}
-        handleTagClick={() => { }}
+        data={filteredPosts}
+        handleTagClick={handleTagClick}
       />
     </section>
   )
