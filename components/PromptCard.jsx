@@ -1,22 +1,26 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+
+import DataContext from "@/app/ContextData";
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
+  const { setProfileName, setPostCreator, creatorId, setCreatorId } = useContext(DataContext);
   const pathName = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
 
-  // console.log(post.creator._id)
-  // router.push("/profile")
 
-  const ShowProfile = async () => {
-    const response = await fetch(`/api/users/${post.creator._id}/posts`);
-    const data = await response.json();
-   console.log(data)
+
+  const ShowProfile =  () => {
+    setProfileName(post.creator.username)
+    setCreatorId(post.creator._id)
+    setPostCreator(post)
+    router.push("/profile")
   };
 
   const [copied, setCopied] = useState(" ")
@@ -35,14 +39,28 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
 
       <div className="flex justify-between items-start gap-5">
         <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
-          <Image
-            src={post.creator?.image}
-            alt="user iamge"
-            width={40}
-            height={40}
-            onClick={ShowProfile}
-            className="rounded-full object-contain"
-          />
+
+          {pathName === "/profile" ? (
+            <Image
+              src={post.creator?.image}
+              alt="user iamge"
+              width={40}
+              height={40}
+              className="rounded-full object-contain"
+            />
+          ) : (
+
+            <Image
+              onClick={ShowProfile}
+              src={post.creator?.image}
+              alt="user iamge"
+              width={40}
+              height={40}
+
+              className="rounded-full object-contain"
+            />
+          )}
+
 
           <div className="flex flex-col">
             <h3
@@ -55,6 +73,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
         </div>
         <div className="copy_btn" onClick={handleCopy}>
           <Image
+            alt="icon"
             src={copied === post.prompt ? '/assets/icons/tick.svg' : '/assets/icons/copy.svg'}
             width={12}
             height={12}

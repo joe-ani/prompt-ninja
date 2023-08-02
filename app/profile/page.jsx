@@ -1,22 +1,27 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/navigation";
-
 import Profile from "@/components/Profile";
+import DataContext from "@/app/ContextData";
+
 
 const MyProfile = () => {
+
+  const { profileName, postCreator, creatorId } = useContext(DataContext)
   const router = useRouter();
   const { data: session } = useSession();
-
   const [myPosts, setMyPosts] = useState([]);
+
+
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${session?.user.id}/posts`);
+      const response = await fetch(`/api/users/${creatorId === "" ? session?.user.id : postCreator.creator._id}/posts`);
       const data = await response.json();
       setMyPosts(data);
+      console.log(profileName)
     };
 
     if (session?.user.id) fetchPosts();
@@ -36,7 +41,6 @@ const MyProfile = () => {
         await fetch(`/api/prompt/${post._id.toString()}`, {
           method: "DELETE",
         });
-
         const filteredPosts = myPosts.filter((item) => item._id !== post._id);
 
         setMyPosts(filteredPosts);
@@ -48,7 +52,8 @@ const MyProfile = () => {
 
   return (
     <Profile
-      name='My'
+      // name={session?.user.id === postData?.creator._id ? "My" : profileName}
+      name={creatorId === "" || creatorId === session.user.id ? "My" : profileName}
       desc='Welcome to your personalized profile page. Share your exceptional prompts and inspire others with the power of your imagination'
       data={myPosts}
       handleEdit={handleEdit}

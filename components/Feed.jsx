@@ -1,11 +1,14 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import PromptCard from './PromptCard'
 import { useSession } from 'next-auth/react';
+import DataContext from '@/app/ContextData';
 
 
 const PromptCardList = ({ data, handleTagClick }) => {
+
+
   return (
     <div className='mt-16 prompt_layout'>
       {data.map(post => (
@@ -25,6 +28,15 @@ const Feed = () => {
   const [posts, setPosts] = useState([]);
   const inputRef = useRef();
   const { data: session } = useSession();
+  const { setProfileName, profileName, setCreatorId, creatorId } = useContext(DataContext);
+
+
+
+  useEffect(() => {
+    setCreatorId("");
+    setProfileName("");
+  }, [])
+
 
   const handleSearchChange = (e) => {
     setSearchText(e.target.value.trim())
@@ -46,7 +58,6 @@ const Feed = () => {
       const response = await fetch('/api/prompt');
       const data = await response.json();
       setPosts(data);
-      console.log(data)
     }
     fetchPost();
   }, [])

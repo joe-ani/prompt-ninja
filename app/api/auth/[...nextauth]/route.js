@@ -16,15 +16,11 @@ const handler = NextAuth({
       session.user.id = sessionUser._id.toString();
       return session;
     },
-    // This callback is triggered when a user signs in
     async signIn({ account, profile, user, credentials }) {
       try {
-        // Establish a connection to the MongoDB database
         await connectToDB();
         console.log("Connect to the database");
-        // Check if the user already exists in the MongoDB database
         const userExists = await User.findOne({ email: profile.email });
-        // If the user doesn't exist, create a new document and save the user in MongoDB
         if (!userExists) {
           await User.create({
             email: profile.email,
